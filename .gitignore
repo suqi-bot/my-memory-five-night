@@ -1,0 +1,33 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Visual Studio
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.userprefs
+
+# JetBrains Rider
+.idea/
+*.sln.DotSettings.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unity Generated
+SysInfoAssemblies/
+crashlytics-*/
+Plugins/x86/
+Plugins/x86_64/
+
+# Asset Store tools
+AssetStoreTools*
