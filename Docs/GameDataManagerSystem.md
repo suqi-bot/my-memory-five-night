@@ -183,7 +183,7 @@ public void LoadFromFile()
 
 ### 与UI系统集成
 ```csharp
-public class SettingsPanel : BasePanel
+public class SettingsPanel : UIPanel
 {
     public void OnSaveButtonClicked()
     {

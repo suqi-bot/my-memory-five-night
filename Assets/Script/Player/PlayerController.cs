@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float checkRadius;
     public LayerMask groundLayer;
+    public float interactionDistance = 3f;
 
     public bool isGround;
 
@@ -157,10 +158,10 @@ public class PlayerController : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo = new RaycastHit();
-        if (Physics.Raycast(ray, out hitInfo))
+        if (Physics.Raycast(ray, out hitInfo, interactionDistance))
         {
             Debug.Log(hitInfo.collider);
-            hitInfo.collider.GetComponentInParent<Door>()?.UseItem();
+            hitInfo.collider.GetComponent<ItemInterface>()?.UseItem();
         }
         return hitInfo;
     }

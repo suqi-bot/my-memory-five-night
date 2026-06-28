@@ -1,0 +1,63 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+/// {PANEL_DESC}
+/// </summary>
+public class {PANEL_NAME} : UIPanel
+{
+    // 在Inspector中设置UI组件引用
+    // [Header("UI组件")]
+    // public Button closeButton;
+    // public Text titleText;
+
+    public override void Init(object data)
+    {
+        base.Init(data);
+        // 初始化逻辑
+        // SetupUI();
+        // BindEvents();
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        // 显示时的逻辑
+        // RefreshData();
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+        // 隐藏时的逻辑
+        // Cleanup();
+    }
+
+    public override void ResetPanel()
+    {
+        base.ResetPanel();
+        // 重置面板状态
+    }
+
+    // private void SetupUI()
+    // {
+    //     // 设置UI组件
+    //     if (closeButton != null)
+    //         closeButton.onClick.AddListener(HideSelf);
+    // }
+
+    // private void BindEvents()
+    // {
+    //     // 绑定事件
+    // }
+
+    // private void RefreshData()
+    // {
+    //     // 刷新数据
+    // }
+
+    // private void Cleanup()
+    // {
+    //     // 清理资源
+    // }
+}

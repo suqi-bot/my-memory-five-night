@@ -74,16 +74,16 @@ string name = GameDataManager.Instance.GetData<string>("playerName");
 ```csharp
 public class UIManager : MonoSingleton<UIManager>
 {
-    private Dictionary<string, BasePanel> panelDic = new Dictionary<string, BasePanel>();
-    
+    private Dictionary<string, UIPanel> panelDic = new Dictionary<string, UIPanel>();
+
     protected override void Awake()
     {
         base.Awake();
         // 初始化Canvas
         InitializeCanvas();
     }
-    
-    public T ShowPanel<T>() where T : BasePanel
+
+    public T ShowPanel<T>() where T : UIPanel
     {
         // 显示面板逻辑
     }

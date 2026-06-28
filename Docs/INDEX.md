@@ -22,46 +22,50 @@
    - 普通单例、MonoBehaviour单例
    - 全局管理器实现
 
+5. [ZUI系统 (ZUI System)](ZUISystem.md)
+   - UI组件库、面板管理
+   - 导航系统、选择效果
+
 ### 游戏系统
-5. [恐怖氛围系统 (Horror Atmosphere System)](HorrorSystem.md)
+6. [恐怖氛围系统 (Horror Atmosphere System)](HorrorSystem.md)
    - 环境音效、视觉效果
    - 恐怖事件、游戏阶段
 
-6. [玩家系统 (Player System)](PlayerSystem.md)
+7. [玩家系统 (Player System)](PlayerSystem.md)
    - 玩家控制、移动系统
    - 视角控制、交互系统
 
-7. [场景物品系统 (Scene Item System)](SceneItemSystem.md)
+8. [场景物品系统 (Scene Item System)](SceneItemSystem.md)
    - 物品交互、状态管理
    - 物品检测
 
 ### 管理系统
-8. [UI系统 (UI System)](UISystem.md)
+9. [UI系统 (UI System)](UISystem.md)
    - 面板管理、UI层级
    - 淡入淡出效果
 
-9. [UI管理器系统 (UI Manager System)](UIManagerSystem.md)
-   - 面板创建、显示隐藏
-   - 面板缓存
+10. [UI管理器系统 (UI Manager System)](UIManagerSystem.md)
+    - 面板创建、显示隐藏
+    - 面板缓存
 
-10. [游戏数据管理系统 (Game Data Manager System)](GameDataManagerSystem.md)
+11. [游戏数据管理系统 (Game Data Manager System)](GameDataManagerSystem.md)
     - 数据存储、数据读取
     - 数据持久化
 
 ### 辅助系统
-11. [有限状态机系统 (Finite State Machine System)](FsmSystem.md)
+12. [有限状态机系统 (Finite State Machine System)](FsmSystem.md)
     - 状态定义、状态切换
     - 黑板数据共享
 
-12. [物品接口系统 (Item Interface System)](ItemInterfaceSystem.md)
+13. [物品接口系统 (Item Interface System)](ItemInterfaceSystem.md)
     - 物品交互接口
     - 交互检测
 
-13. [启动脚本系统 (Start Script System)](StartScriptSystem.md)
+14. [启动脚本系统 (Start Script System)](StartScriptSystem.md)
     - 游戏初始化
     - 启动流程
 
-14. [面前物品检测系统 (Face Check System)](FaceCheckSystem.md)
+15. [面前物品检测系统 (Face Check System)](FaceCheckSystem.md)
     - 物品检测
     - 交互支持
 
@@ -84,13 +88,15 @@
 1. 阅读 [单例模式系统](SingletonSystem.md) 了解基础架构
 2. 阅读 [事件中心系统](EventCenterSystem.md) 了解通信机制
 3. 阅读 [UI系统](UISystem.md) 了解界面管理
-4. 阅读 [玩家系统](PlayerSystem.md) 了解游戏控制
+4. 阅读 [ZUI系统](ZUISystem.md) 了解UI组件库
+5. 阅读 [玩家系统](PlayerSystem.md) 了解游戏控制
 
 ### 开发者指南
 1. 阅读 [音频系统](AudioSystem.md) 了解音频管理
 2. 阅读 [缓存池系统](CachePoolSystem.md) 了解性能优化
 3. 阅读 [恐怖氛围系统](HorrorSystem.md) 了解游戏特色
 4. 阅读 [游戏数据管理系统](GameDataManagerSystem.md) 了解数据管理
+5. 阅读 [ZUI系统](ZUISystem.md) 了解UI组件库
 
 ### 系统集成
 1. 阅读 [事件中心系统](EventCenterSystem.md) 了解模块通信
@@ -101,6 +107,7 @@
 
 ### 更新记录
 - 2026年6月25日：创建文档索引
+- 2026年6月28日：添加ZUI系统文档、UI管理工具文档、统一UI系统为UIPanel
 - 各系统文档持续更新中
 
 ### 文档规范

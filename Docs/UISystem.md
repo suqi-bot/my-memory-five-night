@@ -6,9 +6,10 @@ UI系统负责管理游戏中的用户界面，包括面板的显示、隐藏、
 ## 系统架构
 
 ### 核心组件
-1. **UIManager** - UI管理器（单例模式）
-2. **BasePanel** - 面板基类
-3. **GameSencePanel** - 游戏场景面板示例
+1. **UIPanel** - 面板基类
+2. **UIManager** - UI管理器（单例模式）
+3. **EventManager** - 事件管理器
+4. **GameSencePanel** - 游戏场景面板示例
 
 ## 快速开始
 
@@ -33,74 +34,126 @@ UIManager.Instance.HidePanel<GameSencePanel>(false);
 GameSencePanel panel = UIManager.Instance.GetPanel<GameSencePanel>();
 ```
 
+### 4. 检查面板是否存在
+```csharp
+if (UIManager.Instance.HasPanel<GameSencePanel>())
+{
+    // 面板存在
+}
+```
+
 ## 使用示例
 
 ### 创建新面板
 ```csharp
-public class MainMenuPanel : BasePanel
+public class MainMenuPanel : UIPanel
 {
-    public override void Init()
+    public Button startButton;
+    public Button exitButton;
+
+    public override void Init(object data = null)
     {
-        // 初始化面板
+        base.Init(data);
+        startButton.onClick.AddListener(OnStartButtonClicked);
+        exitButton.onClick.AddListener(OnExitButtonClicked);
     }
-    
-    protected override void Start()
+
+    public override void Show()
     {
-        base.Start();
-        // 面板启动逻辑
+        base.Show();
+        // 显示时的逻辑
     }
-    
-    public void OnStartButtonClicked()
+
+    public override void Hide()
+    {
+        base.Hide();
+        // 隐藏时的逻辑
+    }
+
+    private void OnStartButtonClicked()
     {
         // 开始游戏
         UIManager.Instance.HidePanel<MainMenuPanel>();
         UIManager.Instance.ShowPanel<GameSencePanel>();
+    }
+
+    private void OnExitButtonClicked()
+    {
+        // 退出游戏
+        Application.Quit();
     }
 }
 ```
 
 ### 面板生命周期
 ```csharp
-public class GameSencePanel : BasePanel
+public class GameSencePanel : UIPanel
 {
-    public override void Init()
+    public Image enduranceBG;
+    public Image enduranceFG;
+
+    public override void Init(object data = null)
     {
+        base.Init(data);
         // 面板初始化
     }
-    
-    protected override void Start()
+
+    public override void Show()
     {
-        base.Start();
-        // 面板启动
+        base.Show();
+        // 面板显示时的逻辑
     }
-    
-    protected override void Update()
+
+    public override void Hide()
     {
-        base.Update();
-        // 面板更新
+        base.Hide();
+        // 面板隐藏时的逻辑
     }
-    
-    public void ShowMe()
+
+    public override void ResetPanel()
     {
-        // 面板显示时调用
-        base.ShowMe();
-        // 自定义显示逻辑
+        base.ResetPanel();
+        // 重置面板状态
     }
-    
-    public void HideMe(UnityAction callBack)
+
+    public void ChangeEnduranceValue(float max, float now)
     {
-        // 面板隐藏时调用
-        base.HideMe(callBack);
-        // 自定义隐藏逻辑
+        enduranceFG.rectTransform.sizeDelta = new Vector2(
+            enduranceBG.rectTransform.sizeDelta.x * now / max,
+            enduranceFG.rectTransform.sizeDelta.y
+        );
     }
 }
+```
+
+### 使用事件系统控制面板
+```csharp
+// 通过事件显示面板
+EventManager.Ins.EventTrigger<UIPanelType>(EventType.TryShowUIPanel, UIPanelType.通关);
+
+// 通过事件隐藏面板
+EventManager.Ins.EventTrigger<UIPanelType>(EventType.TryHideUIPanel, UIPanelType.通关);
+
+// 通过事件切换面板
+EventManager.Ins.EventTrigger<UIPanelType, bool>(EventType.SwitchUIPanel, UIPanelType.通关, true);
 ```
 
 ## 文件结构
 ```
 Assets/Script/UI/
-├── BasePanel.cs         # 面板基类
 └── GameSencePanel.cs    # 游戏场景面板
+
+Assets/Script/ZUI/
+├── UIPanel.cs           # 面板基类
+├── UIManager.cs         # UI管理器
+├── PanelBtn.cs          # 面板按钮
+├── PopupBase.cs         # 弹窗基类
+└── ...
+
+Assets/Script/EventCenter/
+├── EventManager.cs      # 事件管理器
+├── EventCenter.cs       # 事件中心
+└── EventType.cs         # 事件类型
 ```
 
 ## 面板管理
@@ -108,61 +161,69 @@ Assets/Script/UI/
 ### 面板缓存
 ```csharp
 // UIManager自动缓存已创建的面板
-private Dictionary<string, BasePanel> panelDic = new Dictionary<string, BasePanel>();
+private Dictionary<string, UIPanel> panelDic = new Dictionary<string, UIPanel>();
 ```
 
 ### 面板显示流程
 1. 检查缓存中是否有面板
 2. 如果有，直接返回缓存面板
-3. 如果没有，从Resources加载面板预制体
+3. 如果没有，从Resources/UI/加载面板预制体
 4. 实例化面板并添加到缓存
-5. 调用面板的ShowMe方法
+5. 调用面板的Show()方法
 
 ### 面板隐藏流程
 1. 查找缓存中的面板
-2. 调用面板的HideMe方法
-3. 等待淡出动画完成
+2. 调用面板的Hide()方法
+3. 如果启用淡出，等待动画完成
 4. 销毁面板并从缓存移除
 
 ## 动画效果
 
+### 启用淡入淡出
+在UIPanel Inspector中勾选"启用淡入淡出"选项，或在代码中设置：
+```csharp
+// 在Inspector中设置enableFade = true
+// 或通过代码控制
+```
+
 ### 淡入效果
 ```csharp
-public void ShowMe()
+public virtual void Show()
 {
-    canvasGroup.alpha = 0;
+    ResetPanel();
     isShow = true;
-}
 
-protected virtual void Update()
-{
-    if (isShow && canvasGroup.alpha != 1)
+    if (enableFade)
     {
-        canvasGroup.alpha += alphaSpeed * Time.deltaTime;
-        if (canvasGroup.alpha > 1)
-            canvasGroup.alpha = 1;
+        canvasGroup.alpha = 0;  // 从透明开始淡入
+    }
+    else
+    {
+        canvasGroup.alpha = 1;
+        canvasGroup.blocksRaycasts = true;
     }
 }
 ```
 
 ### 淡出效果
 ```csharp
-public void HideMe(UnityAction callBack)
-{
-    canvasGroup.alpha = 1;
-    isShow = false;
-    hideCallBack = callBack;
-}
-
 protected virtual void Update()
 {
-    if (!isShow && canvasGroup.alpha != 0)
+    if (!enableFade) return;
+
+    if (isShow && canvasGroup.alpha != 1)
+    {
+        canvasGroup.alpha += alphaSpeed * Time.deltaTime;
+        if (canvasGroup.alpha > 1)
+            canvasGroup.alpha = 1;
+    }
+    else if (!isShow && canvasGroup.alpha != 0)
     {
         canvasGroup.alpha -= alphaSpeed * Time.deltaTime;
         if (canvasGroup.alpha < 0)
         {
             canvasGroup.alpha = 0;
-            hideCallBack.Invoke();
+            hideCallBack?.Invoke();
         }
     }
 }
@@ -172,16 +233,21 @@ protected virtual void Update()
 
 ### 与事件系统集成
 ```csharp
-public class UIManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    private void OnEnable()
+    void OnEnable()
     {
         EventCenter.Instance.AddEventListener(E_EventType.GameOver, ShowGameOverPanel);
     }
-    
-    private void ShowGameOverPanel()
+
+    void OnDisable()
     {
-        ShowPanel<GameOverPanel>();
+        EventCenter.Instance.RemoveEventListener(E_EventType.GameOver, ShowGameOverPanel);
+    }
+
+    void ShowGameOverPanel()
+    {
+        UIManager.Instance.ShowPanel<GameOverPanel>();
     }
 }
 ```
@@ -190,11 +256,14 @@ public class UIManager : MonoBehaviour
 ```csharp
 public class PlayerController : MonoBehaviour
 {
-    private void Update()
+    void Update()
     {
         // 更新体力UI
-        UIManager.Instance.GetPanel<GameSencePanel>()
-            .ChangeEnduranceValue(maxEndurance, nowEndurance);
+        var panel = UIManager.Instance.GetPanel<GameSencePanel>();
+        if (panel != null)
+        {
+            panel.ChangeEnduranceValue(maxEndurance, nowEndurance);
+        }
     }
 }
 ```
@@ -222,29 +291,30 @@ Canvas
 ### 预制体配置
 1. 创建Panel预制体
 2. 添加CanvasGroup组件
-3. 挂载继承BasePanel的脚本
+3. 挂载继承UIPanel的脚本
 4. 放置到Resources/UI目录下
 
 ## 输入处理
 
 ### 按钮事件绑定
 ```csharp
-public class MainMenuPanel : BasePanel
+public class MainMenuPanel : UIPanel
 {
     [SerializeField] private Button startButton;
     [SerializeField] private Button exitButton;
-    
-    public override void Init()
+
+    public override void Init(object data = null)
     {
+        base.Init(data);
         startButton.onClick.AddListener(OnStartButtonClicked);
         exitButton.onClick.AddListener(OnExitButtonClicked);
     }
-    
+
     private void OnStartButtonClicked()
     {
         // 开始游戏
     }
-    
+
     private void OnExitButtonClicked()
     {
         // 退出游戏
@@ -254,10 +324,11 @@ public class MainMenuPanel : BasePanel
 
 ## 注意事项
 1. 面板预制体需要放置到Resources/UI目录下
-2. 面板需要继承BasePanel类
+2. 面板需要继承UIPanel类
 3. 面板需要CanvasGroup组件用于淡入淡出
 4. 面板名称需要与预制体名称一致
 5. 避免在面板中直接引用其他面板
+6. 使用UI管理工具可以快速创建面板
 
 ## 扩展功能
 
@@ -272,8 +343,8 @@ public class UILayerManager : MonoBehaviour
         Popup,
         Top
     }
-    
-    public void SetPanelLayer(BasePanel panel, UILayer layer)
+
+    public void SetPanelLayer(UIPanel panel, UILayer layer)
     {
         // 设置面板层级
     }
@@ -282,20 +353,20 @@ public class UILayerManager : MonoBehaviour
 
 ### 面板动画
 ```csharp
-public class AnimatedPanel : BasePanel
+public class AnimatedPanel : UIPanel
 {
     [SerializeField] private Animator animator;
-    
-    public override void ShowMe()
+
+    public override void Show()
     {
-        base.ShowMe();
+        base.Show();
         animator.Play("Show");
     }
-    
-    public override void HideMe(UnityAction callBack)
+
+    public override void Hide()
     {
         animator.Play("Hide");
-        base.HideMe(callBack);
+        base.Hide();
     }
 }
 ```
